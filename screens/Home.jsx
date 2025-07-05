@@ -1,5 +1,6 @@
 import Card from "@/components/Card";
 import { contexto } from "@/context/ContextoGeneral";
+import { useSound } from "@/hooks/useSound";
 import { useContext } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -8,7 +9,11 @@ const Home = () => {
   if (!ctx) throw new Error("ContextoGeneral no está disponible");
   const { games, goToPage, setFrases, setRetos } = ctx;
 
+  const sound = require("@/assets/sound/level-up.mp3");
+  const player = useSound(sound);
+
   function handleGame(preguntas, penitencias, page) {
+    player();
     setFrases(preguntas);
     setRetos(penitencias);
     goToPage(undefined, page);

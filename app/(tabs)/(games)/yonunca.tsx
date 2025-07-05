@@ -1,66 +1,25 @@
-
-import Arrow from "@/assets/arrow";
 import close from "@/assets/close.png";
 import Dado from "@/assets/Dado";
 import Btn from "@/components/Btn";
 import ModalComponent from "@/components/Modal";
 import { ThemedView } from "@/components/ThemedView";
-import { contexto } from "@/context/ContextoGeneral";
-import { router } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { useYoNuncaLogic } from "@/hooks/useYoNunca";
+import { FontAwesome } from "@expo/vector-icons";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-
 
 type PrevDaleProps = {
   navigation?: any;
 };
 
-const PrevDale = ({}: PrevDaleProps) => {
-  const ctx = useContext(contexto);
-  if (!ctx) throw new Error("ContextoGeneral no está disponible");
-  const { retos, frases, escogerFraseAleatoria } = ctx;
-  const [fraseActual, setFraseActual] = useState("");
-  const [frasesUsadas, setFrasesUsadas] = useState<string[]>([]);
-  const [retoActual, setRetoActual] = useState("");
-  const [retosUsados, setretosUsados] = useState<string[]>([]);
-  const [modal, setModal] = useState(false);
-
-  useEffect(() => {
-    escogerFraseAleatoria(
-      frases,
-      setFraseActual,
-      setFrasesUsadas,
-      frasesUsadas
-    );
-  }, []);
-
-  const handleClick = (tipo: "juego" | "reto") => {
-    switch (tipo) {
-      case "juego":
-        escogerFraseAleatoria(
-          frases,
-          setFraseActual,
-          setFrasesUsadas,
-          frasesUsadas
-        );
-        break;
-      case "reto":
-        escogerFraseAleatoria(
-          retos,
-          setRetoActual,
-          setretosUsados,
-          retosUsados
-        );
-        setModal(true);
-        break;
-      default:
-        break;
-    }
-  };
-
-  function goBack() {
-     router.back();
-  }
+const PrevDale = ({ }: PrevDaleProps) => {
+  const {
+    fraseActual,
+    retoActual,
+    modalVisible,
+    handleClick,
+    goBack,
+    closeModal,
+  } = useYoNuncaLogic();
 
   return (
     <ThemedView style={{ flex: 1, backgroundColor: "#ff0000" }}>
@@ -72,15 +31,18 @@ const PrevDale = ({}: PrevDaleProps) => {
         ]}
         onPress={goBack}
       >
-        <Arrow height={100} width={100} />
+        <FontAwesome name="arrow-right" size={35} color="white" />
       </Pressable>
+
       <View style={style.header}>
         <Dado width={100} height={100} />
         <Text style={style.tittle}>Yo Nunca</Text>
       </View>
+
       <View style={style.main}>
         <Text style={style.textMain}>{fraseActual}</Text>
       </View>
+
       <View style={style.footer}>
         <Btn
           color={"#927bea"}
@@ -93,8 +55,8 @@ const PrevDale = ({}: PrevDaleProps) => {
           callback={() => handleClick("reto")}
         />
       </View>
-      {/*<BannerGame/>*/}
-      <ModalComponent modal={modal} setModal={setModal}>
+
+      <ModalComponent modal={modalVisible} setModal={closeModal}>
         <View style={style.modalContainer}>
           <View style={style.modal}>
             <Pressable
@@ -102,7 +64,7 @@ const PrevDale = ({}: PrevDaleProps) => {
                 pressed ? { opacity: 0.7 } : { opacity: 1 },
                 style.cerrar,
               ]}
-              onPress={() => setModal(false)}
+              onPress={closeModal}
             >
               <Image
                 source={close}

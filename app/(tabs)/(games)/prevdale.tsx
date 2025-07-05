@@ -1,76 +1,27 @@
-import Arrow from "@/assets/arrow";
 import Sex from "@/assets/Sex";
 import Btn from "@/components/Btn";
-import { useContext, useEffect, useState } from "react";
+import { usePrevDaleLogic } from "@/hooks/usePrevDale";
+import { FontAwesome } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-//import { BannerGame } from "../components/BannerGame";
-
-import { contexto } from "@/context/ContextoGeneral";
-import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type DaleProps = {
   setModal: () => void;
 };
 
 const Dale = ({ setModal }: DaleProps) => {
-  const ctx = useContext(contexto);
-  if (!ctx) throw new Error("ContextoGeneral no está disponible");
-  const { retos, frases, escogerFraseAleatoria } = ctx;
-  const router = useRouter();
-  const [categoria, setCategoria] = useState("Verdad");
-  const [fraseActual, setFraseActual] = useState("");
-  const [frasesUsadas, setFrasesUsadas] = useState<any[]>([]);
-  const [retoActual, setRetoActual] = useState("");
-  const [retosUsados, setretosUsados] = useState<any[]>([]);
-  const [textMain, setTextMain] = useState("");
-  //const [modal, setModal] = useState(false);
-
-  // Solo mostrar una pregunta al entrar, según la categoría inicial
-  useEffect(() => {
-    if (categoria === "Verdad") {
-      escogerFraseAleatoria(
-        frases,
-        setFraseActual,
-        setFrasesUsadas,
-        frasesUsadas
-      );
-    } else if (categoria === "Reto") {
-      escogerFraseAleatoria(
-        retos,
-        setRetoActual,
-        setretosUsados,
-        retosUsados
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleClick = (tipo: "verdad" | "reto") => {
-    if (tipo === "verdad") {
-      escogerFraseAleatoria(
-        frases,
-        setFraseActual,
-        setFrasesUsadas,
-        frasesUsadas
-      );
-      setCategoria("Verdad");
-    } else if (tipo === "reto") {
-      escogerFraseAleatoria(
-        retos,
-        setRetoActual,
-        setretosUsados,
-        retosUsados
-      );
-      setCategoria("Reto");
-    }
-  };
-
-  function goBack() {
-    router.back();
-  }
+  const { top, bottom } = useSafeAreaInsets();
+  const { 
+    categoria, 
+    fraseActual, 
+    retoActual, 
+    handleClick, 
+    goBack 
+  } = usePrevDaleLogic();
 
   return (
-    <View style={style.container}>
+    <View style={[style.container, { paddingTop: top, paddingBottom: bottom }]}>
+      {/* Botón de regresar */}
       <Pressable
         style={({ pressed }) => [
           pressed ? { opacity: 0.7 } : { opacity: 1 },
@@ -79,12 +30,16 @@ const Dale = ({ setModal }: DaleProps) => {
         ]}
         onPress={goBack}
       >
-        <Arrow height={100} width={100} />
+        <FontAwesome name="arrow-right" size={35} color="white" />
       </Pressable>
+
+      {/* Encabezado */}
       <View style={style.header}>
         <Sex width={100} height={100} />
         <Text style={style.tittle}>{categoria}</Text>
       </View>
+
+      {/* Contenido principal */}
       <View style={style.main}>
         <View
           style={[
@@ -99,6 +54,8 @@ const Dale = ({ setModal }: DaleProps) => {
           </Text>
         </View>
       </View>
+
+      {/* Botón de siguiente */}
       <View style={style.footer}>
         <Btn
           color={"#38817A"}
@@ -111,7 +68,6 @@ const Dale = ({ setModal }: DaleProps) => {
           callback={() => handleClick("reto")}
         />
       </View>
-      {/*<BannerGame/>*/}
     </View>
   );
 };
@@ -130,7 +86,7 @@ const style = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    height: 180,
+    height: "auto",
     flexDirection: "column",
     marginTop: 50,
   },
@@ -143,9 +99,10 @@ const style = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    padding: 12,
+    padding: 8,
     height: 200,
     flex: 1,
+    paddingHorizontal: 12,
   },
   mainCard: {
     height: "60%",
@@ -168,47 +125,6 @@ const style = StyleSheet.create({
     gap: 18,
     height: 200,
     marginBottom: 20,
-  },
-  modalContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    backgroundColor: "rgba(1,1,1,0.4)",
-    padding: 12,
-  },
-  modal: {
-    backgroundColor: "#ffff",
-    height: 200,
-    width: 310,
-    borderRadius: 20,
-    shadowColor: "#0000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5.62,
-    elevation: 7,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 12,
-    position: "relative",
-  },
-  textModal: {
-    fontSize: 24,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  cerrar: {
-    height: 50,
-    width: 50,
-    borderRadius: 50,
-    top: -25,
-    right: -25,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    backgroundColor: "#fff",
   },
   btnBack: {
     height: 50,
