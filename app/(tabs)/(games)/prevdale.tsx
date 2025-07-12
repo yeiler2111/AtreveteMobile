@@ -54,7 +54,6 @@ const Dale = ({ setModal }: DaleProps) => {
             {categoria == "Verdad" ? fraseActual : retoActual}
           </Text>
         </View>
-        <BannerGame/>
       </View>
 
       {/* Botón de siguiente */}
@@ -63,13 +62,14 @@ const Dale = ({ setModal }: DaleProps) => {
           color={"#38817A"}
           text={"Verdad"}
           callback={() => handleClick("verdad")}
-        />
+          />
         <Btn
           color={"#0D63A5"}
           text={"Reto"}
           callback={() => handleClick("reto")}
-        />
+          />
       </View>
+      <BannerGame/>
     </View>
   );
 };
