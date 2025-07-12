@@ -16,7 +16,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "versionCode": 2,
+      "targetApiLevel": 34,
+      "compileSdkVersion": 34,
+      "minSdkVersion": 21
     },
     "web": {
       "bundler": "metro",
