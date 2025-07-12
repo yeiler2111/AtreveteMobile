@@ -1,4 +1,5 @@
 import Sex from "@/assets/Sex";
+import { BannerGame } from "@/components/BannerGame";
 import Btn from "@/components/Btn";
 import { usePrevDaleLogic } from "@/hooks/usePrevDale";
 import { FontAwesome } from "@expo/vector-icons";
@@ -53,6 +54,7 @@ const Dale = ({ setModal }: DaleProps) => {
             {categoria == "Verdad" ? fraseActual : retoActual}
           </Text>
         </View>
+        <BannerGame/>
       </View>
 
       {/* Botón de siguiente */}

@@ -1,8 +1,18 @@
 import Card from "@/components/Card";
 import { contexto } from "@/context/ContextoGeneral";
 import { useSound } from "@/hooks/useSound";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  AdEventType,
+  InterstitialAd
+} from "react-native-google-mobile-ads";
+
+const adUnitId = "ca-app-pub-6195557105445619/4821740314";
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  keywords: ["fashion", "clothing", "gaming", "technology"],
+});
 
 const Home = () => {
   const ctx = useContext(contexto);
@@ -17,7 +27,37 @@ const Home = () => {
     setFrases(preguntas);
     setRetos(penitencias);
     goToPage(undefined, page);
+    if (loaded) {
+      interstitial.show();
+    }
   }
+
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        setLoaded(true);
+      }
+    );
+    const unsubscribeClosed = interstitial.addAdEventListener(
+      AdEventType.CLOSED,
+      () => {
+        setLoaded(false);
+        interstitial.load();
+      }
+    );
+
+    // Start loading the interstitial straight away
+    interstitial.load();
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribe();
+      unsubscribeClosed();
+    };
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: "red" }}>
@@ -31,11 +71,7 @@ const Home = () => {
             <Card
               text={item.name}
               callback={() =>
-                handleGame(
-                  item.preguntas,
-                  item.penitencias,
-                  item.page
-                )
+                handleGame(item.preguntas, item.penitencias, item.page)
               }
               color={item.color}
               icon={item.icon}

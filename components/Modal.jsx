@@ -1,4 +1,3 @@
-// ...existing code from Modal[1].jsx...
 import { Modal, StyleSheet } from 'react-native'
 
 const ModalComponent = ({children,setModal,modal}) => {
